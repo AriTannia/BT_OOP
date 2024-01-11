@@ -44,14 +44,16 @@ namespace ConsoleApp1
             for(int i = 0; i < n; i++)
             {
                 string a, b;
-                int c;
+                int c, d;
                 Console.Write($"Mã hàng No.{i + 1}: ");
                 a = Console.ReadLine();
                 Console.Write("Tên hàng: ");
                 b = Console.ReadLine();
-                Console.Write("Đơn giá: ");
+                Console.Write("Số lượng: ");
                 c = Convert.ToInt32(Console.ReadLine());
-                item_list.Add(new MatHang(a, b, c));
+                Console.Write("Đơn giá: ");
+                d = Convert.ToInt32(Console.ReadLine());
+                item_list.Add(new MatHang(a, b, c, d));
             }    
         }
         static void NhapCoupon(List<Coupon> coupons)

@@ -33,13 +33,23 @@ namespace ConsoleApp1
         List<MatHang> cart = new List<MatHang>();
         Dictionary<string, int> Ite_Cou = new Dictionary<string, int>();
 
+        private void Create_DB_Cart()
+        {
+            for(int i = 0; i < Item_list.Count; i++)
+            {
+                cart.Add(new MatHang(Item_list[i].Mahang, Item_list[i].Tenhang,
+                    0, Item_list[i].Dongia));
+            }    
+        }
         public void MuaHang_Master()
         {
             bool master_flag = false;
-            while(!master_flag)
+            Create_DB_Cart();
+
+            while (!master_flag)
             {
                 Console.Clear();
-                Console.WriteLine("F. Tìm Hàng\nB. Mua Hàng\nẤn bất kỳ để thoát");
+                Console.WriteLine("F. Tìm Hàng\nB. Mua Hàng\nNhấn Enter để thoát");
                 string a = Console.ReadLine();
                 int b = 0;
                 switch (a.ToUpper())
@@ -47,7 +57,7 @@ namespace ConsoleApp1
                     case "F":
                         if(Search(ref b))
                         {
-                            Console.Write("Mua mặt hàng này (Y/Quay lại bằng bất kỳ nút nào)");
+                            Console.Write("Mua mặt hàng này (Y/Nhấn Enter để quay lại)");
                             string c = Console.ReadLine();
                             if (c.Equals("Y", StringComparison.OrdinalIgnoreCase))
                             {
@@ -92,9 +102,29 @@ namespace ConsoleApp1
         }
         private void Choosen_Thing(ref bool flag, int a)
         {
-            Console.WriteLine($"--- Đã chọn {Item_list[a].Tenhang} ---");
-            cart.Add(Item_list[a]);
-            Item_list.Remove(Item_list[a]);
+            if (Item_list[a].Quantity > 0)
+            {
+                Console.WriteLine($"--- Đã chọn {Item_list[a].Tenhang} ---");
+                Console.Write("Nhập vào số lượng muốn mua: ");
+                int t_num = Program.Input_I(Item_list[a].Quantity);
+
+                Item_list[a].Quantity -= t_num;
+                cart[a].Quantity += t_num;
+
+                Console.WriteLine("\n" + new string('-', 35) + "\n");
+                Console.WriteLine(">> SHOP <<");
+                Hienthi(Item_list);
+                Console.WriteLine("\n" + new string('-', 35) + "\n");
+                Console.WriteLine(">> GIỎ HÀNG <<");
+                Hienthi(cart);
+                Console.WriteLine("\n" + new string('-', 35) + "\n");
+            }
+            else
+            {
+                Console.WriteLine($"--- Mặt hàng {Item_list[a].Tenhang} hiện không còn. ---");
+            } 
+                
+
             Check_Continue(ref flag);
         }
         private void Check_Continue(ref bool flag)
@@ -102,8 +132,7 @@ namespace ConsoleApp1
             bool conti_flag = false;
             while (!conti_flag && !flag)
             {
-                string alpha = (Item_list.Count > 0) ? "\nNhấn bất kỳ để tiếp tục mua hàng\n" : "\n";
-                Console.WriteLine($"Y.Thanh Toán\nN.Thoát{alpha}");
+                Console.WriteLine($"Y.Thanh Toán\nN.Thoát\nNhấn Enter để tiếp tục mua hàng");
                 string b = Console.ReadLine();
                 switch (b.ToUpper())
                 {
@@ -115,12 +144,7 @@ namespace ConsoleApp1
                         flag = true;
                         break;
                     default:
-                        if (Item_list.Count > 0) conti_flag = true;
-                        else
-                        {
-                            Console.Clear();
-                            Console.WriteLine("Hàng trong kho đã hết. Bạn nên tiến hành thanh toán.");
-                        }
+                        conti_flag = true;
                         break;
                 }
             }
@@ -142,14 +166,16 @@ namespace ConsoleApp1
                     case 2:
                         double total = 0;
                         Console.Clear();
+                        Console.WriteLine("\n" + new string('-', 35));
+                        Console.WriteLine(">> Hóa đơn của bạn <<\n");
                         Hienthi(cart);
                         for (int i = 0; i < cart.Count; i++)
                         {
                             int pc1 = 100 - Thanhtoan_CheckCoupon(cart[i].Tenhang);
-                            total += (cart[i].Dongia * ((double)pc1 / 100));
+                            total += (cart[i].Dongia * cart[i].Quantity * ((double)pc1 / 100));
                         }
-                        Console.WriteLine("\n" + new string ('-', 35) + "\n");
-                        Console.WriteLine($"Thành tiền: {total}");
+                        Console.WriteLine("\n" + new string ('-', 35));
+                        Console.WriteLine($"Thành tiền: {total} $");
                         tt_flag = true;
                         break;
                 }
@@ -161,6 +187,7 @@ namespace ConsoleApp1
             {
                 if (Coupons.Count > 0)
                 {
+                    Console.Clear();
                     Hienthi(cart);
                     Console.Write("0. Quay lại\nChọn 1 trong số các mặt hàng trên.\n");
                     int a = Program.Input_I(cart.Count);
@@ -181,14 +208,13 @@ namespace ConsoleApp1
                     }
                     else
                     {
-                        Console.Clear();
                         Console.WriteLine($"Mặt hàng {cart[a - 1].Tenhang} đã được áp mã coupon." +
                             $"\nVui lòng chọn mặt hàng khác");
+                        Console.ReadKey();
                     }
                 }
                 else
                 {
-                    Console.Clear();
                     Console.WriteLine("Không có coupon nào tồn tại.\n -- Ấn một nút bất kỳ để tiếp tục --");
                     Console.ReadKey();
                     break;

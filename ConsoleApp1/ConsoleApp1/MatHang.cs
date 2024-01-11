@@ -11,6 +11,7 @@ namespace ConsoleApp1
     {
         private string _mahang;
         private string _tenhang;
+        private int quantity;
         private int _dongia;
 
         public string Mahang
@@ -25,22 +26,29 @@ namespace ConsoleApp1
             set { _tenhang = value; }
         }
 
+        public int Quantity
+        {
+            get { return quantity; }
+            set { quantity = value; }
+        }
+
         public int Dongia
         {
             get { return _dongia; }
             set { _dongia = value; }
         }
 
-        public MatHang(string mahang, string tenhang, int dongia)
+        public MatHang(string mahang, string tenhang, int quantity, int dongia)
         {
             Mahang = mahang;
             Tenhang = tenhang;
+            Quantity = quantity;
             Dongia = dongia;
         }
 
         public override string ToString()
         {
-            return $"{Mahang} - {Tenhang} - {Dongia}";
+            return $"{Mahang} - {Tenhang} - Số lượng: {Quantity} - {Dongia} $";
         }
 
     }
