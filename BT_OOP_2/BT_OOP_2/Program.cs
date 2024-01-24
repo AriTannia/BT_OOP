@@ -29,9 +29,9 @@ namespace BT_OOP_2
             int j = 1;
             ds_spvt.ToList().ForEach(x =>
             {
-                Console.WriteLine(new string('-', 50) + "\n");
-                Console.WriteLine($"{j++}/\n{x} >> Kết quả của phép tính {x.Tinh()}");
-                Console.WriteLine(new string('-', 50) + "\n");
+                Console.WriteLine(new string('-', 70));
+                x.Tinh();
+                Console.WriteLine(new string('-', 70));
             });
         }
 
